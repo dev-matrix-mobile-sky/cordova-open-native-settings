@@ -3,11 +3,13 @@
 @implementation NativeSettings
 
 - (BOOL)do_open:(NSString *)pref {
-    if ([[UIApplication sharedApplication] openURL:[NSURL URLWithString:pref]]) {
-        return YES;
-    } else {
+    NSURL *url = [NSURL URLWithString:pref];
+    if (url == nil) {
         return NO;
     }
+    // The synchronous openURL: is a no-op since iOS 18; only the options variant still opens anything.
+    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+    return YES;
 }
 
 - (void)open:(CDVInvokedUrlCommand*)command
